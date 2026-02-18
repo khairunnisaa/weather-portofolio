@@ -9,7 +9,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <BrowserRouter basename="/weather-portofolio">
+  <BrowserRouter basename={process.env.REACT_APP_BASE_URL || '/weather-portofolio'}>
     <App />
   </BrowserRouter>
 );
