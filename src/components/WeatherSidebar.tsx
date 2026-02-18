@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   Divider,
-  Chip,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AirIcon from "@mui/icons-material/Air";
@@ -58,7 +57,7 @@ export default function WeatherSidebar({ weather }: Props) {
             <Box display="flex" alignItems="center" gap={1} mb={1}>
               <LocationOnIcon />
               <Typography variant="h6">
-                {weather.name}
+                {weather.name}, {weather.sys.country}
               </Typography>
             </Box>
 

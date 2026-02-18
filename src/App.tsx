@@ -3,7 +3,6 @@ import { Box, CssBaseline, Drawer, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import GlobeMap from "./components/GlobeMap";
 import WeatherSidebar from "./components/WeatherSidebar";
-import ForecastChart from "./components/ForecastChart";
 
 const drawerWidth = 360;
 
@@ -15,7 +14,6 @@ export default function App() {
   return (
     <Box sx={{ display: "flex", bgcolor: "#0f172a" }}>
       <CssBaseline />
-
       <Drawer
         variant={isMobile ? "temporary" : "persistent"}
         open={true}
