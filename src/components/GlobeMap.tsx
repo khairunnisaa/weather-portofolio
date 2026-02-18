@@ -1,23 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
 import Globe from "react-globe.gl";
-import type { Feature, Geometry } from "geojson";
+import { useEffect, useRef } from "react";
 
 interface Props {
-  onCountrySelect: (country: string) => void;
+  setWeather: (data: any) => void;
 }
 
-const GlobeMap: React.FC<Props> = ({ onCountrySelect }) => {
-  const globeRef = useRef<any>(null);
-  const [countries, setCountries] = useState<Feature<Geometry>[]>([]);
+export default function GlobeMap({ setWeather }: Props) {
+  // @ts-ignore
+  const globeRef = useRef<any>();
+
 
   useEffect(() => {
-    fetch(
-      "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setCountries(data.features);
-      });
 
     if (globeRef.current) {
       globeRef.current.controls().autoRotate = true;
@@ -25,25 +18,26 @@ const GlobeMap: React.FC<Props> = ({ onCountrySelect }) => {
     }
   }, []);
 
+  const handleClick = async ({ lat, lng }: any) => {
+    const API_KEY = "cbf893c6d4d9dc219342119fd8606b0d";
+
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&appid=${API_KEY}`
+    );
+
+    const data = await res.json();
+    setWeather(data);
+  };
+
   return (
     <Globe
       ref={globeRef}
-      globeImageUrl="//unpkg.com/three-globe/example/img/earth-dark.jpg"
-      backgroundColor="#0f172a"
-      polygonsData={countries}
-      polygonAltitude={0.01}
-      polygonCapColor={() =>
-        `hsl(${Math.random() * 360}, 60%, 60%)`
-      }
-      polygonSideColor={() => "rgba(59,130,246,0.2)"}
-      polygonStrokeColor={() => "#111"}
-      onPolygonClick={(d: any) => {
-        if (d?.properties?.name) {
-          onCountrySelect(d.properties.name);
-        }
-      }}
+      globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+      bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+      atmosphereColor="lightskyblue"
+      atmosphereAltitude={0.25}
+      backgroundColor="#000"
+      onGlobeClick={handleClick}
     />
   );
-};
-
-export default GlobeMap;
+}

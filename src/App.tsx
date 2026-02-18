@@ -1,89 +1,49 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { Box, CssBaseline, Drawer, useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import GlobeMap from "./components/GlobeMap";
-import {
-  fetchWeatherByCity,
-  WeatherData,
-} from "./services/weatherService";
+import WeatherSidebar from "./components/WeatherSidebar";
+import ForecastChart from "./components/ForecastChart";
 
-import { fetchCapitalByCountry } from "./services/countryService";
+const drawerWidth = 360;
 
-const capitalMap: Record<string, string> = {
-  Indonesia: "Jakarta",
-  Japan: "Tokyo",
-  France: "Paris",
-  Germany: "Berlin",
-  Canada: "Ottawa",
-  Brazil: "Brasilia",
-  India: "New Delhi",
-  UnitedStates: "Washington",
-};
-
-function App() {
-  const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleCountrySelect = async (country: string) => {
-    try {
-      setLoading(true);
-
-      const capital = await fetchCapitalByCountry(country);
-
-      if (!capital) {
-        console.log("Capital not found:", country);
-        return;
-      }
-
-      const weatherData = await fetchWeatherByCity(capital);
-
-      setWeather(weatherData);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+export default function App() {
+  const [weather, setWeather] = useState<any>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
-    <div style={{ position: "relative", height: "100vh" }}>
+    <Box sx={{ display: "flex", bgcolor: "#0f172a" }}>
+      <CssBaseline />
 
-      <GlobeMap onCountrySelect={handleCountrySelect} />
-
-      {loading && (
-        <div
-          style={{
-            position: "absolute",
-            top: 20,
-            right: 20,
+      <Drawer
+        variant={isMobile ? "temporary" : "persistent"}
+        open={true}
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+            bgcolor: "#111827",
             color: "white",
-          }}
-        >
-          Loading weather data...
-        </div>
-      )}
+            borderRight: "1px solid #1f2937",
+          },
+        }}
+      >
+        <WeatherSidebar weather={weather} />
+        {/*<ForecastChart data={weather}/>*/}
+      </Drawer>
 
-      {weather && (
-        <div
-          style={{
-            position: "absolute",
-            top: 20,
-            left: 20,
-            background: "rgba(15,23,42,0.9)",
-            padding: 20,
-            borderRadius: 12,
-            color: "white",
-            width: 250,
-            backdropFilter: "blur(10px)",
-          }}
-        >
-          <h2>{weather.name}</h2>
-          <p>🌡 {weather.main.temp}°C</p>
-          <p>💧 Humidity: {weather.main.humidity}%</p>
-          <p>🌬 Wind: {weather.wind.speed} m/s</p>
-          <p>{weather.weather[0].description}</p>
-        </div>
-      )}
-    </div>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          height: "100vh",
+          transition: "all 0.3s ease",
+        }}
+      >
+        <GlobeMap setWeather={setWeather} />
+      </Box>
+    </Box>
   );
 }
-
-export default App;
