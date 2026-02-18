@@ -1,24 +1,87 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import GlobeMap from "./components/GlobeMap";
+import {
+  fetchWeatherByCity,
+  WeatherData,
+} from "./services/weatherService";
+
+import { fetchCapitalByCountry } from "./services/countryService";
+
+const capitalMap: Record<string, string> = {
+  Indonesia: "Jakarta",
+  Japan: "Tokyo",
+  France: "Paris",
+  Germany: "Berlin",
+  Canada: "Ottawa",
+  Brazil: "Brasilia",
+  India: "New Delhi",
+  UnitedStates: "Washington",
+};
 
 function App() {
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleCountrySelect = async (country: string) => {
+    try {
+      setLoading(true);
+
+      const capital = await fetchCapitalByCountry(country);
+
+      if (!capital) {
+        console.log("Capital not found:", country);
+        return;
+      }
+
+      const weatherData = await fetchWeatherByCity(capital);
+
+      setWeather(weatherData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div style={{ position: "relative", height: "100vh" }}>
+
+      <GlobeMap onCountrySelect={handleCountrySelect} />
+
+      {loading && (
+        <div
+          style={{
+            position: "absolute",
+            top: 20,
+            right: 20,
+            color: "white",
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          Loading weather data...
+        </div>
+      )}
+
+      {weather && (
+        <div
+          style={{
+            position: "absolute",
+            top: 20,
+            left: 20,
+            background: "rgba(15,23,42,0.9)",
+            padding: 20,
+            borderRadius: 12,
+            color: "white",
+            width: 250,
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <h2>{weather.name}</h2>
+          <p>🌡 {weather.main.temp}°C</p>
+          <p>💧 Humidity: {weather.main.humidity}%</p>
+          <p>🌬 Wind: {weather.wind.speed} m/s</p>
+          <p>{weather.weather[0].description}</p>
+        </div>
+      )}
     </div>
   );
 }

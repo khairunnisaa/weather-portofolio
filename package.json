@@ -1,19 +1,34 @@
 {
   "name": "weather-portfolio",
+  "homepage": "https://username.github.io/weather-portfolio",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/lab": "^7.0.1-beta.22",
+    "@mui/material": "^7.3.7",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
+    "@tsparticles/react": "^3.0.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.126",
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
+    "axios": "^1.13.5",
+    "d3": "^7.9.0",
+    "framer-motion": "^12.33.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-globe.gl": "^2.37.0",
     "react-scripts": "5.0.1",
+    "react-simple-maps": "^3.0.0",
+    "react-tsparticles": "^2.12.2",
+    "recharts": "^3.7.0",
+    "three": "^0.182.0",
+    "topojson-client": "^3.1.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
@@ -21,7 +36,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -40,5 +57,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/geojson": "^7946.0.16",
+    "@types/three": "^0.182.0",
+    "@types/topojson-client": "^3.1.5",
+    "gh-pages": "^6.3.0"
   }
 }
